@@ -13,13 +13,13 @@ HEADER = "hpi_type,hpi_flavor,frequency,level,place_name,place_id,yr,period,inde
 FIXTURE = "\n".join(
     [
         HEADER,
-        "traditional,purchase_only,quarterly,MSA,Test Metro A,31080,2024,2,100.0,99.5",
-        "traditional,purchase_only,quarterly,MSA,Test Metro A,31080,2024,1,99.0,98.5",
-        "traditional,purchase_only,quarterly,MSA,Test Metro B,47900,2024,1,50.0,50.0",
-        "traditional,all_transactions,quarterly,MSA,Test Metro A,31080,2024,1,77.0,77.0",
-        "traditional,purchase_only,annual,MSA,Test Metro A,31080,2024,4,101.0,101.0",
-        "traditional,purchase_only,quarterly,Divisions,Test Division,31080,2024,3,88.0,88.0",
-        "traditional,purchase_only,quarterly,MSA,Test Metro A,31080,2023,4,,",
+        "traditional,purchase-only,quarterly,MSA,Test Metro A,31080,2024,2,100.0,99.5",
+        "traditional,purchase-only,quarterly,MSA,Test Metro A,31080,2024,1,99.0,98.5",
+        "traditional,purchase-only,quarterly,MSA,Test Metro B,47900,2024,1,50.0,50.0",
+        "traditional,all-transactions,quarterly,MSA,Test Metro A,31080,2024,1,77.0,77.0",
+        "traditional,purchase-only,annual,MSA,Test Metro A,31080,2024,4,101.0,101.0",
+        "traditional,purchase-only,quarterly,Divisions,Test Division,31080,2024,3,88.0,88.0",
+        "traditional,purchase-only,quarterly,MSA,Test Metro A,31080,2023,4,,",
     ]
 )
 
@@ -41,8 +41,8 @@ def test_other_cbsa_returns_empty_list():
 
 def test_summary_reports_what_the_file_holds_for_cbsa():
     text = summarize_cbsa(FIXTURE.splitlines(), "31080")
-    assert "('traditional', 'purchase_only', 'quarterly', 'MSA'): 3" in text
-    assert "('traditional', 'purchase_only', 'quarterly', 'Divisions'): 1" in text
+    assert "('traditional', 'purchase-only', 'quarterly', 'MSA'): 3" in text
+    assert "('traditional', 'purchase-only', 'quarterly', 'Divisions'): 1" in text
 
 
 def test_summary_reports_missing_cbsa_and_name_matches():

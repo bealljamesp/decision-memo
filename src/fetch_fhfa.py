@@ -39,7 +39,7 @@ REQUIRED_COLUMNS = {
 # Row filters: metro-level, traditional repeat-sales index, purchase-only, quarterly.
 FILTERS = {
     "hpi_type": "traditional",
-    "hpi_flavor": "purchase_only",
+    "hpi_flavor": "purchase-only",
     "frequency": "quarterly",
     "level": "MSA",
 }
