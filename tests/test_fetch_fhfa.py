@@ -5,7 +5,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from fetch_fhfa import select_metro_rows  # noqa: E402
+from fetch_fhfa import select_metro_rows, summarize_cbsa  # noqa: E402
 
 HEADER = "hpi_type,hpi_flavor,frequency,level,place_name,place_id,yr,period,index_nsa,index_sa"
 
@@ -37,6 +37,18 @@ def test_values_parse_and_blanks_become_none():
 
 def test_other_cbsa_returns_empty_list():
     assert select_metro_rows(FIXTURE.splitlines(), "99999") == []
+
+
+def test_summary_reports_what_the_file_holds_for_cbsa():
+    text = summarize_cbsa(FIXTURE.splitlines(), "31080")
+    assert "('traditional', 'purchase_only', 'quarterly', 'MSA'): 3" in text
+    assert "('traditional', 'purchase_only', 'quarterly', 'Divisions'): 1" in text
+
+
+def test_summary_reports_missing_cbsa_and_name_matches():
+    text = summarize_cbsa(FIXTURE.splitlines(), "99999", name_hint="Metro A")
+    assert "place_id not in file" in text
+    assert "31080: Test Metro A" in text
 
 
 def test_missing_required_column_raises():

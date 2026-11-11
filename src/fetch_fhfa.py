@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+from collections import Counter
 from pathlib import Path
 from typing import Iterable
 
@@ -76,20 +77,43 @@ def select_metro_rows(lines: Iterable[str], cbsa: str) -> list[dict]:
     return rows
 
 
-def fetch_metro_hpi(cbsa: str, timeout: int = 120) -> list[dict]:
-    response = requests.get(FHFA_MASTER_URL, stream=True, timeout=timeout)
+def summarize_cbsa(lines: Iterable[str], cbsa: str, name_hint: str = "Los Angeles") -> str:
+    """Describe what the file holds for a CBSA, to diagnose an empty selection."""
+    reader = csv.DictReader(lines)
+    combos: Counter = Counter()
+    name_matches: dict[str, str] = {}
+    for row in reader:
+        if row.get("place_id", "").strip() == cbsa:
+            combos[(row.get("hpi_type"), row.get("hpi_flavor"), row.get("frequency"), row.get("level"))] += 1
+        elif name_hint.lower() in row.get("place_name", "").lower():
+            name_matches.setdefault(row["place_id"].strip(), row["place_name"])
+    lines_out = [f"Rows for CBSA {cbsa} by (hpi_type, hpi_flavor, frequency, level):"]
+    lines_out += [f"  {combo}: {count}" for combo, count in combos.most_common()] or ["  none: place_id not in file"]
+    if name_matches:
+        lines_out.append(f"Places whose name contains '{name_hint}':")
+        lines_out += [f"  {pid}: {name}" for pid, name in name_matches.items()]
+    return "\n".join(lines_out)
+
+
+def fetch_lines(url: str, timeout: int = 120) -> list[str]:
+    response = requests.get(url, stream=True, timeout=timeout)
     response.raise_for_status()
-    return select_metro_rows(response.iter_lines(decode_unicode=True), cbsa)
+    return list(response.iter_lines(decode_unicode=True))
 
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--cbsa", required=True, help="5-digit CBSA code, e.g. 31080 for Los Angeles")
+    parser.add_argument("--url", default=FHFA_MASTER_URL, help="FHFA master CSV to read")
     args = parser.parse_args(argv)
 
-    rows = fetch_metro_hpi(args.cbsa)
+    lines = fetch_lines(args.url)
+    rows = select_metro_rows(lines, args.cbsa)
     if not rows:
-        raise SystemExit(f"No purchase-only quarterly MSA rows found for CBSA {args.cbsa}.")
+        raise SystemExit(
+            f"No purchase-only quarterly MSA rows found for CBSA {args.cbsa} in {args.url}.\n"
+            + summarize_cbsa(lines, args.cbsa)
+        )
 
     RAW_DIR.mkdir(parents=True, exist_ok=True)
     out_path = RAW_DIR / f"fhfa_hpi_{args.cbsa}.json"
