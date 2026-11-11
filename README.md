@@ -20,20 +20,22 @@ Over a five-year horizon, should a household earning $120,000 a year in a given 
 
 ## Data
 
-- **ACS (Census):** median home value and median gross rent by metro.
-- **FHFA House Price Index:** metro price trends for the appreciation assumption.
+- **ACS (Census):** median home value and median gross rent by county.
+- **FHFA House Price Index:** purchase-only quarterly price trends by metropolitan division.
 - **Freddie Mac PMMS:** weekly mortgage rates.
 
-## Metros
+## Metros and geographies
 
-| Metro | CBSA code |
-|---|---|
-| Los Angeles-Long Beach-Anaheim | 31080 |
-| Washington-Arlington-Alexandria | 47900 |
-| Chicago-Naperville-Elgin | 16980 |
-| New York-Newark-Jersey City | 35620 |
+Each metro uses one geography for both sources, so the price trend and the home value describe the same area.
 
-Verify these codes against the Census delineation file before use.
+| Metro | FHFA index (MSAD) | ACS geography |
+|---|---|---|
+| Los Angeles | 31084, Los Angeles-Long Beach-Glendale | County 06037 (LA County) |
+| Washington, DC | TBD | TBD |
+| Chicago | 16984, Chicago-Naperville-Evanston (MSAD) | TBD |
+| New York | TBD | TBD |
+
+FHFA publishes the large metros as metropolitan divisions, so its IDs don't match the CBSA codes. The Chicago division ID above is from FHFA's series list, not the CBSA code (16980). Confirm each ID and county list against the Census delineation file before use.
 
 ## Planned structure
 
