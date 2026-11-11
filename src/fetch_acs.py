@@ -81,7 +81,16 @@ def fetch_housing(
     params = build_params(api_key, cbsa=cbsa, county_fips=county_fips)
     response = requests.get(url, params=params, timeout=timeout)
     response.raise_for_status()
-    record = parse_acs_response(response.json())
+    try:
+        payload = response.json()
+    except ValueError:
+        # The Census API sometimes returns plain-text errors (for example, an inactive key)
+        # instead of JSON. Show the start of the body so the cause is visible.
+        snippet = response.text[:200].strip()
+        raise RuntimeError(
+            f"Census API returned a non-JSON response (status {response.status_code}): {snippet}"
+        ) from None
+    record = parse_acs_response(payload)
     record["year"] = year
     return record
 

@@ -66,6 +66,24 @@ def test_build_params_requires_exactly_one_geography():
         build_params("abc123", cbsa="31080", county_fips="06037")
 
 
+def test_non_json_response_reports_the_body(monkeypatch):
+    import fetch_acs
+
+    class FakeResponse:
+        status_code = 200
+        text = "error: unknown/unsupported geography hierarchy"
+
+        def raise_for_status(self):
+            pass
+
+        def json(self):
+            raise ValueError("not json")
+
+    monkeypatch.setattr(fetch_acs.requests, "get", lambda *a, **k: FakeResponse())
+    with pytest.raises(RuntimeError, match="unknown/unsupported geography"):
+        fetch_acs.fetch_housing("abc123", 2024, county_fips="06037")
+
+
 def test_build_params_rejects_malformed_county_fips():
     with pytest.raises(ValueError):
         build_params("abc123", county_fips="6037")
