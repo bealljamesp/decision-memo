@@ -1,0 +1,7 @@
+name: decision-memo
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - requests
+  - pytest
