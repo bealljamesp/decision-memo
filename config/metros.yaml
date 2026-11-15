@@ -1,0 +1,27 @@
+# Metro geographies. Each metro uses one FHFA division (price trend) and one ACS county list (home value and rent).
+# The IDs below are confirmed for Los Angeles only. Other metros are TBD and must be confirmed against
+# the Census delineation file before use.
+
+los_angeles:
+  name: "Los Angeles-Long Beach-Glendale"
+  fhfa_division: "31084"
+  acs_counties: ["06037"]          # Los Angeles County, CA
+  status: "modeled (memo/memo.md)"
+
+washington_dc:
+  name: "Washington-Arlington-Alexandria (DC)"
+  fhfa_division: null              # TBD
+  acs_counties: null               # TBD
+  status: "not started"
+
+chicago:
+  name: "Chicago-Naperville-Evanston"
+  fhfa_division: "16984"           # FHFA series list; CBSA code is 16980
+  acs_counties: null               # TBD
+  status: "not started"
+
+new_york:
+  name: "New York-Newark-Jersey City"
+  fhfa_division: null              # TBD
+  acs_counties: null               # TBD
+  status: "not started"
