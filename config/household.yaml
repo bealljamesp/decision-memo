@@ -1,0 +1,21 @@
+# Household and financing inputs for the rent-vs-buy model.
+# Documentation of the inputs used in memo/memo.md. model.py still takes these as command-line
+# arguments and defaults; wiring this file in is a planned follow-up.
+
+income_gross_annual: 120000      # hypothetical household, not the author's finances
+horizon_years: 5
+down_payment_shares: [0.20, 0.05]
+loan_term_years: 30              # fixed rate
+mortgage_rate_annual: 0.0718     # Freddie Mac PMMS 30-year, week of 2026-11-05
+mortgage_rate_source: "Freddie Mac Primary Mortgage Market Survey, 2026-11-05 release"
+affordability_rule_share: 0.28   # housing payment as share of gross monthly income
+
+# Labeled assumptions (not sourced figures)
+property_tax_rate: 0.011
+insurance_rate: 0.0035
+maintenance_rate: 0.01
+closing_rate: 0.03
+selling_rate: 0.06
+pmi_rate: 0.0075
+rent_growth_rate: 0.03
+invested_return_rate: 0.045
